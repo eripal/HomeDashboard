@@ -3,6 +3,11 @@ import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import * as xml2js from 'xml2js';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromPromise';
+
+interface TrainResponse {
+  TrainAnnouncement: any;
+}
 
 class TrainInfo {
   constructor(public trainNo: string,
@@ -15,6 +20,7 @@ class TrainInfo {
   templateUrl: './train.component.html',
   styleUrls: ['./train.component.scss']
 })
+
 export class TrainComponent implements OnInit {
   url: string;
   search: any;
@@ -24,18 +30,20 @@ export class TrainComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('1');
     this.trains = new TrainInfo('', '');
     this.json = '';
-    this.getTrains().subscribe(data => {
-      this.trains = data;
+    this.getTrains().then(val => {
+      console.log('2: ' + JSON.stringify(val));
+      console.log('id1: ' + val.RESPONSE.RESULT['0'].TrainAnnouncement['0'].AdvertisedTrainIdent['0']);
+      this.json = val;
+      this.trains = new TrainInfo(val.RESPONSE.RESULT['0'].TrainAnnouncement['0'].AdvertisedTrainIdent['0'], '');
     });
-    console.log('Trains: ' + this.trains);
-    console.log('2');
+    console.log('Trains: ' + this.json);
   }
 
-  private getTrains(): Observable<TrainInfo> {
-    const body: string = '<REQUEST>\n' +
+  private getTrains(): any {
+    return new Promise((resolve, reject) => {
+      const body: string = '<REQUEST>\n' +
                             ' <LOGIN authenticationkey="fe898a06841443beb05ea563a1ff2b8c" />\n' +
                             ' <QUERY objecttype="TrainAnnouncement" orderby="AdvertisedTimeAtLocation">\n' +
                             ' <FILTER>\n' +
@@ -63,24 +71,36 @@ export class TrainComponent implements OnInit {
                             ' <INCLUDE>Canceled</INCLUDE>\n' +
                             '</QUERY>\n' +
                             '</REQUEST>';
-    const url = 'http://api.trafikinfo.trafikverket.se/v1/data.xml';
-    const headers = new HttpHeaders().set('Content-Type', 'text/xml; charset=utf-8');
-    const options =  {
-      headers: headers,
-      responseType: 'text'
-    };
-
-    return this.http.post<TrainResponse[]>(url, body, options)
-      .flatMap((res) => {
-        xml2js.parseString(res, function(err, result) {
-            console.log('result: ' + result);
+      const url = 'http://api.trafikinfo.trafikverket.se/v1/data.xml';
+      const headers = new HttpHeaders().set('Content-Type', 'text/xml; charset=utf-8');
+      const options =  {
+        headers: headers,
+        responseType: 'text'
+      };
+      this.http.post<TrainResponse[]>(url, body, options)
+        .toPromise()
+        .then( res => {
+          console.log('pre: ' + res);
+          //return Observable.fromPromise(this.xml2jsParser(res));
+          this.xml2jsParser(res).then(val => {
+            console.log('val: ' + JSON.stringify(val));
+            resolve(val);
+          });
         });
-        console.log('grus: ' + this.json);
-        return new TrainInfo('abcd', '123');
     });
   }
-}
 
-interface TrainResponse {
-  TrainAnnouncement: any;
+  private xml2jsParser(xml: string): any {
+    return new Promise(function(resolve, reject) {
+          xml2js.parseString(xml, function(err, result) {
+            if (!err) {
+              console.log('xml: ' + xml);
+              console.log('result: ' + JSON.stringify(result));
+              resolve(result);
+            }else {
+              reject(err);
+            }
+        });
+    });
+  }
 }
