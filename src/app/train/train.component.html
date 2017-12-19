@@ -1,6 +1,10 @@
-<!-- <div id="upper-right">
-    <div *ngFor="let t of trains">
-        <h4>{{t}}</h4>
-    </div>
-</div> -->
-<p>{{trains.trainNo}}</p>
+<div id="upper-right">
+  <table>
+    <tr *ngFor="let t of trains">
+        <td>{{t.information}}</td>
+        <td>{{t.trainNo}}</td>
+        <td>{{t.arriveTime | date:'HH:mm'}}</td>
+        <td>{{t.estimatedTime | date:'HH:mm'}}</td>
+    </tr>
+  </table>
+</div>

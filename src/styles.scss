@@ -1,1 +1,57 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,700');
+
+body {
+    background:rgb(0, 0, 0);
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    padding-top: 10px;
+	font-family: "Roboto Condensed","arial","Georgia","verdana","Times New Roman";
+}
+
+#wrapper { 
+	width: 900px;
+	height: 1800px;
+	margin: 0 auto;
+}
+
+#upper-left {
+    width: 40%;
+    height: 40%;
+    margin: 5px 5px 0 0;
+    float: left;
+    text-align: left;
+}
+
+#upper-right {
+    width: 40%;
+    height: 40%;
+    margin: 5px 5px 0 0;
+    float: right;
+    text-align: right;
+}
+#bottom-right {
+    width: 40%;
+    height: 25%;
+    margin: 0 0 0 0;
+    float: right;
+/*		background: url(bg.gif) repeat-x;*/
+    text-align: right;		
+}
+
+#bottom-left {
+    width: 40%;
+    height: 25%;
+    margin: 0 5px 0 5px;
+    float: left;
+/*		background: url(bg.gif) repeat-x;*/
+    text-align: left;
+}
+#middle{
+    width: 80%;
+    height: 25%;
+    float: left;
+    text-align:center;		
+    margin: 5px 5px 5px 5px;
+}

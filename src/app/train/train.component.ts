@@ -11,7 +11,9 @@ interface TrainResponse {
 
 class TrainInfo {
   constructor(public trainNo: string,
-              public arriveTime: string) {
+              public arriveTime: string,
+              public information: string,
+              public estimatedTime: string) {
                 }
 }
 
@@ -22,23 +24,14 @@ class TrainInfo {
 })
 
 export class TrainComponent implements OnInit {
-  url: string;
-  search: any;
-  json: any;
-  public trains: TrainInfo;
+  public trains: TrainInfo[];
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
-    this.trains = new TrainInfo('', '');
-    this.json = '';
     this.getTrains().then(val => {
-      console.log('2: ' + JSON.stringify(val));
-      console.log('id1: ' + val.RESPONSE.RESULT['0'].TrainAnnouncement['0'].AdvertisedTrainIdent['0']);
-      this.json = val;
-      this.trains = new TrainInfo(val.RESPONSE.RESULT['0'].TrainAnnouncement['0'].AdvertisedTrainIdent['0'], '');
+      this.trains = this.getTrainInfo(val);
     });
-    console.log('Trains: ' + this.json);
   }
 
   private getTrains(): any {
@@ -59,8 +52,8 @@ export class TrainComponent implements OnInit {
                             '     <AND>\n' +
                             '       <LT name="AdvertisedTimeAtLocation" value="$dateadd(00:30:00)" />\n' +
                             '       <GT name="EstimatedTimeAtLocation" value="$dateadd(-00:15:00)" />\n' +
-                          '       </AND>\n' +
-                          '     </OR>\n' +
+                            '     </AND>\n' +
+                            '   </OR>\n' +
                             ' </AND>\n' +
                             ' </FILTER>\n' +
                             ' <INCLUDE>AdvertisedTrainIdent</INCLUDE>\n' +
@@ -80,10 +73,7 @@ export class TrainComponent implements OnInit {
       this.http.post<TrainResponse[]>(url, body, options)
         .toPromise()
         .then( res => {
-          console.log('pre: ' + res);
-          //return Observable.fromPromise(this.xml2jsParser(res));
           this.xml2jsParser(res).then(val => {
-            console.log('val: ' + JSON.stringify(val));
             resolve(val);
           });
         });
@@ -94,13 +84,32 @@ export class TrainComponent implements OnInit {
     return new Promise(function(resolve, reject) {
           xml2js.parseString(xml, function(err, result) {
             if (!err) {
-              console.log('xml: ' + xml);
-              console.log('result: ' + JSON.stringify(result));
               resolve(result);
             }else {
               reject(err);
             }
         });
     });
+  }
+
+  private getTrainInfo(json: any): TrainInfo[] {
+    const list: TrainInfo[] = new Array<TrainInfo>();
+    json.RESPONSE.RESULT['0'].TrainAnnouncement.forEach(ta => {
+        let info = '';
+        let estTime = '';
+        if (ta.EstimatedTimeAtLocation === 'undefined') {
+          info = 'Delayed';
+          estTime = ta.EstimatedTimeAtLocation;
+        } else {
+        }
+        if (ta.EstimatedTimeAtLocation === 'true') {
+          info = 'Preliminary';
+        }
+        if (ta.Canceled === 'true') {
+          info = 'Canceled';
+        }
+        list.push(new TrainInfo(ta.AdvertisedTrainIdent, ta.AdvertisedTimeAtLocation, info, estTime));
+    });
+    return list;
   }
 }
