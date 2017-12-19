@@ -15,7 +15,7 @@ export class NewsComponent implements OnInit {
     this.getFeed().then(val => {
       console.log('id1: ' + val.items['0'].description);
       this.feedTitle = val.items['0'].title;
-      this.feedDescription = val.items['0'].description;
+      this.feedDescription = val.items['0'].description.split('<br>')[1].split('<img')[0];
     });
   }
 
