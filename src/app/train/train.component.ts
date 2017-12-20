@@ -68,9 +68,9 @@ export class TrainComponent implements OnInit {
       const headers = new HttpHeaders().set('Content-Type', 'text/xml; charset=utf-8');
       const options =  {
         headers: headers,
-        responseType: 'text'
+        responseType: 'text' as 'text'
       };
-      this.http.post<TrainResponse[]>(url, body, options)
+      this.http.post(url, body, {headers: headers, responseType: 'text' as 'text'})
         .toPromise()
         .then( res => {
           this.xml2jsParser(res).then(val => {

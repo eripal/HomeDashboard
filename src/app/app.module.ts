@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { ClockComponent } from './clock/clock.component';
 import { TrainComponent } from './train/train.component';
 import { NewsComponent } from './news/news.component';
+import { WeatherComponent } from './weather/weather.component';
+import { CalendarComponent } from './calendar/calendar.component';
 
 
 @NgModule({
@@ -15,7 +17,9 @@ import { NewsComponent } from './news/news.component';
     AppComponent,
     ClockComponent,
     TrainComponent,
-    NewsComponent
+    NewsComponent,
+    WeatherComponent,
+    CalendarComponent
   ],
   imports: [
     BrowserModule,
