@@ -7,8 +7,8 @@ import { HttpClient, HttpHeaders  } from '@angular/common/http';
   styleUrls: ['./news.component.scss']
 })
 export class NewsComponent implements OnInit {
-  private feedTitle: any;
-  private feedDescription: string;
+  public feedTitle: any;
+  public feedDescription: string;
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
