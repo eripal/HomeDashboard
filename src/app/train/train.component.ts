@@ -31,6 +31,7 @@ export class TrainComponent implements OnInit {
   ngOnInit() {
     this.getTrains().then(val => {
       this.trains = this.getTrainInfo(val);
+      console.log(val);
     });
   }
 
