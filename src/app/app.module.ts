@@ -9,6 +9,7 @@ import { ClockComponent } from './clock/clock.component';
 import { TrainComponent } from './train/train.component';
 import { NewsComponent } from './news/news.component';
 import { WeatherComponent } from './weather/weather.component';
+import { WeatherService } from './weather/weather.service';
 import { CalendarComponent } from './calendar/calendar.component';
 
 
@@ -26,7 +27,7 @@ import { CalendarComponent } from './calendar/calendar.component';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [WeatherService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

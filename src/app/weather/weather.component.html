@@ -1,3 +1,7 @@
 <div id="bottom-right">
-    <p>Weather</p>
+    <div *ngIf="forecast | async as f">
+        <div *ngFor="let day of f.daily.data; let i = index" >
+            <i [class]="weatherIcon(day.icon)">  {{ day.time * 1000 | date: 'MMM d'  }} {{ day.summary }} {{day.temperatureHigh | number:'1.0-0' }} till {{day.temperatureLow | number : '1.0-0'}}</i>
+        </div>
+    </div>
 </div>
